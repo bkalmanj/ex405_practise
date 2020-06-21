@@ -65,3 +65,22 @@ SELECTOR STATEMENT:
    notify { "This server operating system is $message": }
 
 
+USING REGEXP:
+1) if $::hostname =~ /agent/ {
+     notify { "Matched": }
+   }
+   
+2) if $::hostname !~ /agent/ {
+     notify { "not matched": }
+   }    
+   
+3) $input = 'Redhat Centos Fedora'
+   if $input = /(.*) Centos (.*)/ {
+     notify { "$0 $1 $2": }
+   }
+   
+   $0 = Full pattern
+   $1 = 1st group
+   $2 = 2nd group
+ 
+   
