@@ -1,5 +1,55 @@
-Below are few conditonals and their examples:
+Below are few conditonals & their examples: Here I have used facters as variables. We can even create custom facters and use.
+While using facters only osfamily works fine with this format => $::osfamily. 
+For all facters you have to write in this format => $::os['architecture'].
+Do not use quotes for values which doesnt have quotes in hash type facters. 
+For ex: 
+system_uptime => {
+  days => 0,
+  hours => 8,
+  seconds => 29428,
+  uptime => "8:10 hours"
+}
+if $::system_uptime['days'] == 0 {
+  notify { 'This is uptime': }
+}
+
+
+DIFFERENT TYPES OF IF ELSE BLOCK:
+
 1) Using if statement:
 if $::osfamily == 'RedHat' {
   notify { 'Powered by Redhat': }
 }
+
+2) Using if else statement:
+if $::osfamily == 'RedHat' {
+  notify { 'Powered by RedHat': }
+}
+else {
+  notify { 'Welcome': }
+}
+
+3) Using if elsif statement using facter variable (hash type):
+if $::os['architecture'] == "x86_64" {
+  notify { 'Its 64-bit': }
+}
+elsif $::os['architecture'] == "i386" {
+  notify { 'Its 32-bit': }
+}
+else {
+  notify { 'Welcome': }
+}
+
+UNLESS STATEMENT. (NEGATIVE IF) 
+unless $::timezone == 'UTC' {
+  notify { "There exists someother timezone": }
+}
+
+CASE STATEMENT:
+case $::osfamily {
+'CentOS': { notify { "Powered by CentOS": } }
+'RedHat': { notify { "Powered by Redhat": } }
+}
+
+
+
