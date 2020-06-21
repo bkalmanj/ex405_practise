@@ -1,0 +1,5 @@
+Below are few conditonals and their examples:
+1) Using if statement:
+if $::osfamily == 'RedHat' {
+  notify { 'Powered by Redhat': }
+}
