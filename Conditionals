@@ -40,16 +40,28 @@ else {
   notify { 'Welcome': }
 }
 
-UNLESS STATEMENT. (NEGATIVE IF) 
-unless $::timezone == 'UTC' {
+
+
+UNLESS STATEMENT. (NEGATIVE IF):
+1) unless $::timezone == 'UTC' {
   notify { "There exists someother timezone": }
-}
+  }
+
+
 
 CASE STATEMENT:
-case $::osfamily {
-'CentOS': { notify { "Powered by CentOS": } }
-'RedHat': { notify { "Powered by Redhat": } }
-}
+1) case $::osfamily {
+  'CentOS': { notify { "Powered by CentOS": } }
+  'RedHat': { notify { "Powered by Redhat": } }
+  }
 
+
+
+SELECTOR STATEMENT:
+1) $message = $operatingsystem ? {
+     'CentOS' => 'Powered by CentOS',
+     'RedHat' => 'Powered by 'RedHat',
+     }
+   notify { "This server operating system is $message": }
 
 
