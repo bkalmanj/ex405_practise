@@ -1,0 +1,114 @@
+1) Install and configure Puppet.
+     Install Puppet servers.
+     Install Puppet nodes.
+     Register Puppet nodes to a Puppet server.
+   
+
+PUPPET SERVER/MASTER:   
+<<<< Install puppet servers >>>>
+yum -y install puppet-server
+
+<<<< Starting and enabling puppet master service >>>>
+systemctl start puppetmaster
+systemctl enable puppetmaster
+
+<<<< opening the port on firewalld. This will allow clients to connect to master >>>>
+firewalld-cmd --permanent --add-port 8140/tcp
+
+
+PUPPER CLIENT/AGENT:
+<<<< Install puppet nodes >>>>
+yum -y install puppet
+
+<<<< Register Puppet nodes to a Puppet server >>>>
+vi /etc/puppet/puppet.conf
+[agent]
+server = puppet-master.fqdn
+
+<<<< Starting and enabling puppet agent service. Running the puppet-agent service sends a certificate to puppet-master >>>>
+systemctl start puppet
+systemctl enable puppet
+
+<<<< puppet-master signs the certificate and returns certificate back to client >>>>
+puppet cert list
+puppet cert sign puppet-agent.fqdn
+
+<<<< On puppet-agent test run with --noop option to make sure connection is fine >>>> 
+puppet agent --test --noop
+
+
+
+2) Create and maintain Puppet manifests.
+     Create new Puppet manifests.
+     Debug existing Puppet manifests.
+     
+<<<< Create new Puppet manifests. I created a simple test.pp manifest using user resource >>>>
+vi test.pp
+user { 'admin':
+  ensure => 'present',
+  home => '/home/admin',
+  shell => '/bin/bash'
+}
+
+puppet resource --type >>> To get the list of all the puppet resource types
+a2mod
+anchor
+augeas
+computer
+concat_file
+concat_fragment
+cron
+
+puppet resource resourcetype >> To get the list of entities of that resourcetypes and their settings
+Ex: puppet resource yumrepo
+
+puppet doc >> Generates reference to all resource types
+
+puppet doc | less and use ### resourcetype >> To get reference only for that particular resourcetype
+puppet doc | less
+### package
+
+puppet describe resourcetype >> Displays reference to a particular resourcetype.
+Ex: puppet describe service
+
+puppet resource resourcetype resourcename >> displays information about the particular resource type.
+Ex: puppet resource package httpd
+
+
+<<<< Debug existing Puppet manifests >>>>
+puppet parser validate file.pp >> This command will not generate any output if there is no syntax error.
+
+puppet apply --noop test.pp >> This command will run the smoke test which does not apply changes on the system. 
+
+
+3) Create Puppet modules.
+     Create reusable modules.
+     Create modules with classes, name spaces, variables, and conditionals.
+     Create modules that install software on target nodes and deploy configuration files.
+     
+<<<< Create reusable modules >>>>     
+puppet module generate author-modulename >> Generates a working directory for writing a module. It will ask few questions, if
+you dont want to answer you can just ENTER, it will take default values or run the commad with --skip-interview option.
+puppet module generate author-modulename --skip-interview
+
+Ex: puppet module generate abc-webserver
+    puppet module generate abc-webserver --skip-interview
+    
+<<<< building puppet modules>>>>    
+puppet module build abc-webserver >> Module is built and packaged as tar archive in the pkg directory in the module's 
+working directory.
+
+<<<< Installing the packed puppet module >>>>
+puppet module install abc-webserver/pkg/abc-webserver-0.1.0.tar.gz >> This command installs puppet module
+in /etc/puppet/modules directory. After the module has been installed, it will also display if any dependencies are present.
+
+
+    
+    
+
+
+
+
+
+
+     
